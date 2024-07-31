@@ -181,6 +181,16 @@ class Project(pydantic_v1.BaseModel):
     Finished tasks
     """
 
+    partial_task_number: typing.Optional[int] = pydantic_v1.Field(default=None)
+    """
+    Partial tasks
+    """
+
+    conflict_task_number: typing.Optional[int] = pydantic_v1.Field(default=None)
+    """
+    Conflict tasks
+    """
+
     queue_total: typing.Optional[str] = None
     queue_done: typing.Optional[str] = None
 
