@@ -1,6 +1,9 @@
+[project]
+name = "label-studio-sdk"
+
 [tool.poetry]
 name = "label-studio-sdk"
-version = "1.0.5"
+version = "1.0.9"
 description = ""
 readme = "README.md"
 authors = []
@@ -31,16 +34,20 @@ packages = [
 Repository = 'https://github.com/HumanSignal/label-studio-sdk'
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.9,<4"
 Pillow = ">=10.0.1"
 appdirs = ">=1.4.3"
+datamodel-code-generator = "0.26.1"
 httpx = ">=0.21.2"
 ijson = ">=3.2.3"
-jsonschema = "3.2.0"
+jsf = "^0.11.2"
+jsonschema = ">=4.23.0"
 lxml = ">=4.2.5"
-nltk = "3.6.7"
+nltk = "^3.9.1"
+numpy = ">=1.26.4,<2.0.0"
 pandas = ">=0.24.0"
 pydantic = ">= 1.9.2"
+pydantic-core = "^2.18.2"
 requests = ">=2.22.0"
 requests-mock = "1.12.1"
 typing_extensions = ">= 4.0.0"
@@ -53,7 +60,7 @@ pytest = "^7.4.0"
 pytest-asyncio = "^0.23.5"
 python-dateutil = "^2.9.0"
 types-python-dateutil = "^2.9.0.20240316"
-jupyter = "^1.0.0"
+ruff = "^0.5.6"
 
 [tool.pytest.ini_options]
 testpaths = [ "tests" ]
@@ -61,6 +68,9 @@ asyncio_mode = "auto"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
+
+[tool.ruff]
+line-length = 120
 
 
 [build-system]

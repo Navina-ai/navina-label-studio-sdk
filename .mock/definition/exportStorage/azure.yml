@@ -23,6 +23,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       display-name: List export storages
       request:
         name: AzureListRequest
@@ -51,8 +53,7 @@ service:
                 status: initialized
                 traceback: traceback
                 meta:
-                  meta:
-                    key: value
+                  key: value
                 title: title
                 description: description
                 created_at: '2024-01-15T09:30:00Z'
@@ -78,6 +79,8 @@ service:
         <Tip>After you add the storage, you should validate the connection
         before attempting to sync your data. Your data will not be exported
         until you [sync your connection](sync).</Tip>
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Create new storage
       request:
         name: AzureCreateRequest
@@ -86,6 +89,7 @@ service:
             can_delete_objects:
               type: optional<boolean>
               docs: Deletion from storage enabled
+              default: false
             title:
               type: optional<string>
               docs: Storage title
@@ -107,6 +111,7 @@ service:
             account_key:
               type: optional<string>
               docs: Azure Blob account key
+        content-type: application/json
       response:
         docs: ''
         type: AzureCreateResponse
@@ -133,6 +138,8 @@ service:
         Validate a specific Azure export storage connection. This is useful to
         ensure that the storage configuration settings are correct and
         operational before attempting to export data.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Validate export storage
       request:
         name: AzureValidateRequest
@@ -144,6 +151,7 @@ service:
             can_delete_objects:
               type: optional<boolean>
               docs: Deletion from storage enabled
+              default: false
             title:
               type: optional<string>
               docs: Storage title
@@ -165,6 +173,7 @@ service:
             account_key:
               type: optional<string>
               docs: Azure Blob account key
+        content-type: application/json
       examples:
         - request: {}
       audiences:
@@ -182,6 +191,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -210,8 +221,7 @@ service:
               status: initialized
               traceback: traceback
               meta:
-                meta:
-                  key: value
+                key: value
               title: title
               description: description
               created_at: '2024-01-15T09:30:00Z'
@@ -235,6 +245,8 @@ service:
         synced from the external storage, you will need to delete them manually
         from within the Label Studio UI or use the [Delete
         tasks](../../tasks/delete-all-tasks) API. 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -258,6 +270,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -270,6 +284,7 @@ service:
             can_delete_objects:
               type: optional<boolean>
               docs: Deletion from storage enabled
+              default: false
             title:
               type: optional<string>
               docs: Storage title
@@ -291,6 +306,7 @@ service:
             account_key:
               type: optional<string>
               docs: Azure Blob account key
+        content-type: application/json
       response:
         docs: ''
         type: AzureUpdateResponse
@@ -331,15 +347,17 @@ service:
         <Note>Before proceeding, you should review [How sync operations work -
         Source storage](https://labelstud.io/guide/storage#Source-storage) to
         ensure that your data remains secure and private.</Note> 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
-        id: string
+        id: integer
       display-name: Sync export storage
       response:
         docs: ''
         type: root.AzureBlobExportStorage
       examples:
         - path-parameters:
-            id: id
+            id: 1
           response:
             body:
               id: 1
@@ -357,8 +375,7 @@ service:
               status: initialized
               traceback: traceback
               meta:
-                meta:
-                  key: value
+                key: value
               title: title
               description: description
               created_at: '2024-01-15T09:30:00Z'
@@ -366,12 +383,15 @@ service:
               project: 1
       audiences:
         - public
+  source:
+    openapi: openapi/openapi.yaml
 types:
   AzureCreateResponse:
     properties:
       can_delete_objects:
         type: optional<boolean>
         docs: Deletion from storage enabled
+        default: false
       title:
         type: optional<string>
         docs: Storage title
@@ -393,11 +413,14 @@ types:
       account_key:
         type: optional<string>
         docs: Azure Blob account key
+    source:
+      openapi: openapi/openapi.yaml
   AzureUpdateResponse:
     properties:
       can_delete_objects:
         type: optional<boolean>
         docs: Deletion from storage enabled
+        default: false
       title:
         type: optional<string>
         docs: Storage title
@@ -419,3 +442,5 @@ types:
       account_key:
         type: optional<string>
         docs: Azure Blob account key
+    source:
+      openapi: openapi/openapi.yaml

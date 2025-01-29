@@ -5,12 +5,16 @@ types:
       token:
         type: optional<string>
         docs: Token
+    source:
+      openapi: openapi/openapi.yaml
   UsersGetTokenResponse:
     docs: User token
     properties:
       detail:
         type: optional<string>
         docs: Token
+    source:
+      openapi: openapi/openapi.yaml
 service:
   auth: false
   base-path: ''
@@ -22,6 +26,8 @@ service:
       docs: >-
         Reset your access token or API key. When reset, any scripts or
         automations you have in place will need to be updated with the new key.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Reset user token
       response:
         docs: User token response
@@ -41,6 +47,8 @@ service:
         find this in the Label Studio interface, click **Account & Settings** in
         the upper right. For more information, see [Access
         Token](https://labelstud.io/guide/user_account#Access-token).
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Get user token
       response:
         docs: User token response
@@ -58,6 +66,8 @@ service:
       docs: >-
         Get information about your user account, such as your username, email,
         and user ID.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Retrieve my user
       response:
         docs: ''
@@ -76,6 +86,7 @@ service:
               phone: phone
               active_organization: 1
               allow_newsletters: true
+              date_joined: '2024-01-15T09:30:00Z'
       audiences:
         - public
     list:
@@ -85,6 +96,8 @@ service:
       docs: |
 
         List all users in your Label Studio organization. 
+      source:
+        openapi: openapi/openapi.yaml
       display-name: List users
       response:
         docs: ''
@@ -103,6 +116,7 @@ service:
                 phone: phone
                 active_organization: 1
                 allow_newsletters: true
+                date_joined: '2024-01-15T09:30:00Z'
       audiences:
         - public
     create:
@@ -112,6 +126,8 @@ service:
       docs: |
 
         Create a user in Label Studio.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Create a user
       request:
         name: UsersCreateRequest
@@ -144,6 +160,7 @@ service:
             allow_newsletters:
               type: optional<boolean>
               docs: Whether the user allows newsletters
+        content-type: application/json
       response:
         docs: ''
         type: root.BaseUser
@@ -162,6 +179,7 @@ service:
               phone: phone
               active_organization: 1
               allow_newsletters: true
+              date_joined: '2024-01-15T09:30:00Z'
       audiences:
         - public
     get:
@@ -174,6 +192,8 @@ service:
 
         You will need to provide their user ID. You can find a list of all user
         IDs using [List users](list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -198,6 +218,7 @@ service:
               phone: phone
               active_organization: 1
               allow_newsletters: true
+              date_joined: '2024-01-15T09:30:00Z'
       audiences:
         - public
     delete:
@@ -216,6 +237,8 @@ service:
         <Warning>Use caution when deleting a user, as this can cause issues such
         as breaking the "Annotated by" filter or leaving orphaned
         records.</Warning>
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -238,6 +261,8 @@ service:
 
         You will need to provide their user ID. You can find a list of all user
         IDs using [List users](list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -275,6 +300,7 @@ service:
             allow_newsletters:
               type: optional<boolean>
               docs: Whether the user allows newsletters
+        content-type: application/json
       response:
         docs: ''
         type: root.BaseUser
@@ -295,7 +321,30 @@ service:
               phone: phone
               active_organization: 1
               allow_newsletters: true
+              date_joined: '2024-01-15T09:30:00Z'
       audiences:
         - public
+    get_product_tour:
+      path: /api/current-user/product-tour
+      method: GET
+      auth: true
+      source:
+        openapi: openapi/openapi.yaml
+      examples:
+        - {}
+      audiences:
+        - internal
+    update_product_tour:
+      path: /api/current-user/product-tour
+      method: PATCH
+      auth: true
+      source:
+        openapi: openapi/openapi.yaml
+      examples:
+        - {}
+      audiences:
+        - internal
+  source:
+    openapi: openapi/openapi.yaml
 imports:
   root: __package__.yml

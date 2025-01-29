@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from collections import defaultdict, OrderedDict
 from lxml import etree
 import xmljson
+from jsf import JSF
 
 from label_studio_sdk._legacy.exceptions import (
     LSConfigParseException,
@@ -30,8 +31,10 @@ from .control_tags import (
 )
 from .object_tags import ObjectTag
 from .label_tags import LabelTag
-from .objects import AnnotationValue, TaskValue, PredictionValue
+from .objects import AnnotationValue, TaskValue, PredictionValue, Region
 from . import create as CE
+
+logger = logging.getLogger(__name__)
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -250,8 +253,7 @@ class LabelInterface:
         """
         config = cls.create(*args, **kwargs)
         return cls(config=config, **kwargs)
-    
-    
+
     def __init__(self, config: str, tags_mapping=None, *args, **kwargs):
         """
         Initialize a LabelInterface instance using a config string.
@@ -299,9 +301,47 @@ class LabelInterface:
         self._labels = labels
         self._tree = tree
 
-        
+    def create_regions(self, data: Dict[str, Union[str, Dict, List[str], List[Dict]]]) -> List[Region]:
+        """
+        Takes raw data representation and maps keys to control tag names.
+        If name is not found, it will be skipped
 
-    ##### NEW API
+        Args:
+            data (Dict): Raw data representation. Example: {"choices_name": "Positive", "labels_name": [{"start": 0, "end": 10, "label": "person"}]}
+            raise_if_control_not_found (bool): Raise an exception if control tag is not found.
+        """
+        regions = []
+        for control_tag_name, payload in data.items():
+            if control_tag_name not in self._controls:
+                logger.info(f"Control tag '{control_tag_name}' not found in the config")
+                continue
+
+            control = self._controls[control_tag_name]
+            # TODO: I don't really like this part, looks like a workaround
+            # 1. we should allow control.label to process custom payload outside of those strictly containing "label"
+            # 2. we should be less open regarding the payload type and defining the strict typing elsewhere,
+            # but likely that requires rewriting of how ControlTag.label() is working now
+            if isinstance(payload, (str, int, float)):
+                payload = {'label': payload}
+            elif isinstance(payload, list):
+                if len(payload) > 0:
+                    if isinstance(payload[0], str):
+                        payload = {'label': payload}
+                    else:
+                        pass
+
+            if isinstance(payload, Dict):
+                payload = [payload]
+
+            for item in payload:
+                regions.append(control.label(**item))
+
+        return regions
+
+    @property
+    def config(self):
+        """Returns the XML configuration string"""
+        return self._config
 
     @property
     def controls(self):
@@ -493,11 +533,25 @@ class LabelInterface:
         tree.task_loaded = True
         
         for obj in tree.objects:
-            print(obj.value_is_variable, obj.value_name)
             if obj.value_is_variable and obj.value_name in task:
                 obj.value = task.get(obj.value_name)
 
         return tree
+    
+    def to_json_schema(self):
+        """
+        Converts the current LabelInterface instance into a JSON Schema.
+
+        Returns:
+            dict: A dictionary representing the JSON Schema.
+        """
+        return {
+            "type": "object",
+            "properties": {
+                name: control.to_json_schema() for name, control in self._controls.items()
+            },
+            "required": list(self._controls.keys())
+        }
     
     def parse(self, config_string: str) -> Tuple[Dict, Dict, Dict, etree._Element]:
         """Parses the received configuration string into dictionaries
@@ -717,7 +771,7 @@ class LabelInterface:
             return False
 
         # type of the region should match the tag name        
-        if control.tag.lower() != region["type"]:
+        if control.tag.lower() != region["type"].lower():
             return False
         
         # make sure that in config it connects to the same tag as
@@ -786,9 +840,67 @@ class LabelInterface:
 
         return task
 
-    def generate_sample_annotation(self):
-        """ """
-        raise NotImplemented()
+    def _generate_sample_regions(self):
+        """ Generate an example of each control tag's JSON schema and validate it as a region"""
+        return self.create_regions({
+            control.name: JSF(control.to_json_schema()).generate()
+            for control in self.controls
+        })
+
+    def generate_sample_prediction(self) -> Optional[dict]:
+        """Generates a sample prediction that is valid for this label config.
+
+        Example:
+            {'model_version': 'sample model version',
+             'score': 0.0,
+             'result': [{'id': 'e7bd76e6-4e88-4eb3-b433-55e03661bf5d',
+               'from_name': 'sentiment',
+               'to_name': 'text',
+               'type': 'choices',
+               'value': {'choices': ['Neutral']}}]}
+
+        NOTE: `id` field in result is not required when importing predictions; it will be generated automatically.
+        NOTE: for each control tag, depends on tag.to_json_schema() being implemented correctly
+        """
+        prediction = PredictionValue(
+            model_version='sample model version',
+            result=self._generate_sample_regions()
+        )
+        prediction_dct = prediction.model_dump()
+        if self.validate_prediction(prediction_dct):
+            return prediction_dct
+        else:
+            logger.debug(f'Sample prediction {prediction_dct} failed validation for label config {self.config}')
+            return None
+
+    def generate_sample_annotation(self) -> Optional[dict]:
+        """Generates a sample annotation that is valid for this label config.
+
+        Example:
+            {'was_cancelled': False,
+             'ground_truth': False,
+             'lead_time': 0.0,
+             'result_count': 0,
+             'completed_by': -1,
+             'result': [{'id': 'b05da11d-3ffc-4657-8b8d-f5bc37cd59ac',
+               'from_name': 'sentiment',
+               'to_name': 'text',
+               'type': 'choices',
+               'value': {'choices': ['Negative']}}]}
+
+        NOTE: `id` field in result is not required when importing predictions; it will be generated automatically.
+        NOTE: for each control tag, depends on tag.to_json_schema() being implemented correctly
+        """
+        annotation = AnnotationValue(
+            completed_by=-1,  # annotator's user id
+            result=self._generate_sample_regions()
+        )
+        annotation_dct = annotation.model_dump()
+        if self.validate_annotation(annotation_dct):
+            return annotation_dct
+        else:
+            logger.debug(f'Sample annotation {annotation_dct} failed validation for label config {self.config}')
+            return None
 
     #####
     ##### COMPATIBILITY LAYER

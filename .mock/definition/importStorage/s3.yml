@@ -22,6 +22,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       display-name: List import storages
       request:
         name: S3ListRequest
@@ -45,8 +47,7 @@ service:
                 status: initialized
                 traceback: traceback
                 meta:
-                  meta:
-                    key: value
+                  key: value
                 title: title
                 description: description
                 created_at: '2024-01-15T09:30:00Z'
@@ -87,6 +88,8 @@ service:
         <Tip>After you add the storage, you should validate the connection
         before attempting to sync your data. Your data will not be imported
         until you [sync your connection](sync).</Tip>
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Create import storage
       request:
         name: S3CreateRequest
@@ -104,9 +107,11 @@ service:
                 your bucket contains images, you can use this option to generate
                 URLs for these images. If set to False, it will read the content
                 of the file and load it into Label Studio.
+              default: false
             presign:
               type: optional<boolean>
               docs: Presign URLs for download
+              default: true
             presign_ttl:
               type: optional<integer>
               docs: Presign TTL in minutes
@@ -147,6 +152,7 @@ service:
             s3_endpoint:
               type: optional<string>
               docs: S3 Endpoint
+        content-type: application/json
       response:
         docs: ''
         type: S3CreateResponse
@@ -181,6 +187,8 @@ service:
         Validate a specific S3 import storage connection. This is useful to
         ensure that the storage configuration settings are correct and
         operational before attempting to import data.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Validate import storage
       request:
         name: S3ValidateRequest
@@ -201,9 +209,11 @@ service:
                 your bucket contains images, you can use this option to generate
                 URLs for these images. If set to False, it will read the content
                 of the file and load it into Label Studio.
+              default: false
             presign:
               type: optional<boolean>
               docs: Presign URLs for download
+              default: true
             presign_ttl:
               type: optional<integer>
               docs: Presign TTL in minutes
@@ -244,6 +254,7 @@ service:
             s3_endpoint:
               type: optional<string>
               docs: S3 Endpoint
+        content-type: application/json
       examples:
         - request: {}
       audiences:
@@ -261,6 +272,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -284,8 +297,7 @@ service:
               status: initialized
               traceback: traceback
               meta:
-                meta:
-                  key: value
+                key: value
               title: title
               description: description
               created_at: '2024-01-15T09:30:00Z'
@@ -326,6 +338,8 @@ service:
         If you want to remove the tasks that were synced from the external
         storage, you will need to delete them manually from within the Label
         Studio UI or use the [Delete tasks](../../tasks/delete-all-tasks) API. 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -349,6 +363,8 @@ service:
 
         For more information about working with external storage, see [Sync data
         from external storage](https://labelstud.io/guide/storage).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -370,9 +386,11 @@ service:
                 your bucket contains images, you can use this option to generate
                 URLs for these images. If set to False, it will read the content
                 of the file and load it into Label Studio.
+              default: false
             presign:
               type: optional<boolean>
               docs: Presign URLs for download
+              default: true
             presign_ttl:
               type: optional<integer>
               docs: Presign TTL in minutes
@@ -413,6 +431,7 @@ service:
             s3_endpoint:
               type: optional<string>
               docs: S3 Endpoint
+        content-type: application/json
       response:
         docs: ''
         type: S3UpdateResponse
@@ -459,7 +478,9 @@ service:
 
         <Note>Before proceeding, you should review [How sync operations work -
         Source storage](https://labelstud.io/guide/storage#Source-storage) to
-        ensure that your data remains secure and private.</Note> 
+        ensure that your data remains secure and private.</Note>
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -483,8 +504,7 @@ service:
               status: initialized
               traceback: traceback
               meta:
-                meta:
-                  key: value
+                key: value
               title: title
               description: description
               created_at: '2024-01-15T09:30:00Z'
@@ -503,6 +523,8 @@ service:
               project: 1
       audiences:
         - public
+  source:
+    openapi: openapi/openapi.yaml
 types:
   S3CreateResponse:
     properties:
@@ -518,9 +540,11 @@ types:
           bucket contains images, you can use this option to generate URLs for
           these images. If set to False, it will read the content of the file
           and load it into Label Studio.
+        default: false
       presign:
         type: optional<boolean>
         docs: Presign URLs for download
+        default: true
       presign_ttl:
         type: optional<integer>
         docs: Presign TTL in minutes
@@ -561,6 +585,8 @@ types:
       s3_endpoint:
         type: optional<string>
         docs: S3 Endpoint
+    source:
+      openapi: openapi/openapi.yaml
   S3UpdateResponse:
     properties:
       regex_filter:
@@ -575,9 +601,11 @@ types:
           bucket contains images, you can use this option to generate URLs for
           these images. If set to False, it will read the content of the file
           and load it into Label Studio.
+        default: false
       presign:
         type: optional<boolean>
         docs: Presign URLs for download
+        default: true
       presign_ttl:
         type: optional<integer>
         docs: Presign TTL in minutes
@@ -618,3 +646,5 @@ types:
       s3_endpoint:
         type: optional<string>
         docs: S3 Endpoint
+    source:
+      openapi: openapi/openapi.yaml

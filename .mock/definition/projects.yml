@@ -13,9 +13,14 @@ types:
         validation:
           format: uri
       results: list<root.Project>
+    source:
+      openapi: openapi/openapi.yaml
   ProjectsCreateResponse:
     docs: Project
     properties:
+      id:
+        type: optional<integer>
+        docs: Project ID
       title:
         type: optional<string>
         docs: Project title
@@ -66,6 +71,8 @@ types:
           first label Car should be twice as important as Airplane, then you
           need to specify: {'my_bbox': {'type': 'RectangleLabels', 'labels':
           {'Car': 1.0, 'Airplane': 0.5}, 'overall': 0.33}
+    source:
+      openapi: openapi/openapi.yaml
   ProjectsUpdateResponse:
     docs: Project
     properties:
@@ -119,6 +126,8 @@ types:
           first label Car should be twice as important as Airplane, then you
           need to specify: {'my_bbox': {'type': 'RectangleLabels', 'labels':
           {'Car': 1.0, 'Airplane': 0.5}, 'overall': 0.33}
+    source:
+      openapi: openapi/openapi.yaml
   ProjectsImportTasksResponse:
     docs: Task creation response
     properties:
@@ -146,6 +155,8 @@ types:
       data_columns:
         type: optional<list<string>>
         docs: The list of found data columns
+    source:
+      openapi: openapi/openapi.yaml
 service:
   auth: false
   base-path: ''
@@ -180,6 +191,8 @@ service:
       pagination:
         offset: $request.page
         results: $response.results
+      source:
+        openapi: openapi/openapi.yaml
       display-name: List all projects
       request:
         name: ProjectsListRequest
@@ -199,6 +212,9 @@ service:
           page_size:
             type: optional<integer>
             docs: Number of results to return per page.
+          workspaces:
+            type: optional<integer>
+            docs: workspaces
       response:
         docs: ''
         type: ProjectsListResponse
@@ -219,6 +235,12 @@ service:
                   enable_empty_annotation: true
                   show_annotation_history: true
                   organization: 1
+                  prompts:
+                    - title: title
+                      input_fields:
+                        - input_fields
+                      output_classes:
+                        - output_classes
                   color: color
                   maximum_annotations: 1
                   is_published: true
@@ -226,7 +248,7 @@ service:
                   is_draft: true
                   created_at: '2024-01-15T09:30:00Z'
                   min_annotations_to_start_training: 1
-                  start_training_on_annotation_update: start_training_on_annotation_update
+                  start_training_on_annotation_update: true
                   show_collab_predictions: true
                   num_tasks_with_annotations: 1
                   task_number: 1
@@ -241,14 +263,18 @@ service:
                   overlap_cohort_percentage: 1
                   task_data_login: task_data_login
                   task_data_password: task_data_password
+                  control_weights:
+                    key: value
+                  parsed_label_config:
+                    key: value
                   evaluate_predictions_automatically: true
-                  config_has_control_tags: config_has_control_tags
+                  config_has_control_tags: true
                   skip_queue: REQUEUE_FOR_ME
                   reveal_preannotations_interactively: true
                   pinned_at: '2024-01-15T09:30:00Z'
                   finished_task_number: 1
-                  queue_total: queue_total
-                  queue_done: queue_done
+                  queue_total: 1
+                  queue_done: 1
       audiences:
         - public
     create:
@@ -275,6 +301,8 @@ service:
         '{"label_config": "<View>[...]</View>"}'
 
         ```
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Create new project
       request:
         name: ProjectsCreateRequest
@@ -332,6 +360,13 @@ service:
                 as important as Airplane, then you need to specify: {'my_bbox':
                 {'type': 'RectangleLabels', 'labels': {'Car': 1.0, 'Airplane':
                 0.5}, 'overall': 0.33}
+            workspace:
+              type: optional<integer>
+              docs: Workspace ID
+            model_version:
+              type: optional<string>
+              docs: Model version
+        content-type: application/json
       response:
         docs: ''
         type: ProjectsCreateResponse
@@ -339,6 +374,7 @@ service:
         - request: {}
           response:
             body:
+              id: 1
               title: My project
               description: My first project
               label_config: <View>[...]</View>
@@ -365,9 +401,12 @@ service:
       method: POST
       auth: true
       docs: Validate an arbitrary labeling configuration.
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Validate label config
       request:
         body: root.ProjectLabelConfig
+        content-type: application/json
       examples:
         - request:
             label_config: label_config
@@ -381,6 +420,8 @@ service:
         Retrieve information about a specific project by project ID. The project
         ID can be found in the URL when viewing the project in Label Studio, or
         you can retrieve all project IDs using [List all projects](list).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -405,6 +446,20 @@ service:
               enable_empty_annotation: true
               show_annotation_history: true
               organization: 1
+              prompts:
+                - title: title
+                  description: description
+                  created_by: 1
+                  created_at: '2024-01-15T09:30:00Z'
+                  updated_at: '2024-01-15T09:30:00Z'
+                  organization: 1
+                  input_fields:
+                    - input_fields
+                  output_classes:
+                    - output_classes
+                  associated_projects:
+                    - 1
+                  skill_name: skill_name
               color: '#FF0000'
               maximum_annotations: 1
               is_published: true
@@ -418,7 +473,7 @@ service:
                 avatar: avatar
               created_at: '2023-08-24T14:15:22Z'
               min_annotations_to_start_training: 0
-              start_training_on_annotation_update: start_training_on_annotation_update
+              start_training_on_annotation_update: true
               show_collab_predictions: true
               num_tasks_with_annotations: 10
               task_number: 100
@@ -434,19 +489,17 @@ service:
               task_data_login: user
               task_data_password: secret
               control_weights:
-                control_weights:
-                  key: value
+                key: value
               parsed_label_config:
-                parsed_label_config:
-                  key: value
+                key: value
               evaluate_predictions_automatically: false
-              config_has_control_tags: config_has_control_tags
+              config_has_control_tags: true
               skip_queue: REQUEUE_FOR_ME
               reveal_preannotations_interactively: true
               pinned_at: '2023-08-24T14:15:22Z'
               finished_task_number: 10
-              queue_total: queue_total
-              queue_done: queue_done
+              queue_total: 10
+              queue_done: 100
       audiences:
         - public
     delete:
@@ -462,6 +515,8 @@ service:
         The project ID can be found in the URL when viewing the project in Label
         Studio, or you can retrieve all project IDs using [List all
         projects](list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -507,6 +562,8 @@ service:
         might have created in the Data Manager are removed.
 
         </Warning>
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -568,6 +625,13 @@ service:
                 as important as Airplane, then you need to specify: {'my_bbox':
                 {'type': 'RectangleLabels', 'labels': {'Car': 1.0, 'Airplane':
                 0.5}, 'overall': 0.33}
+            workspace:
+              type: optional<integer>
+              docs: Workspace ID
+            model_version:
+              type: optional<string>
+              docs: Model version
+        content-type: application/json
       response:
         docs: ''
         type: ProjectsUpdateResponse
@@ -701,6 +765,8 @@ service:
 
 
         <br>
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -713,9 +779,11 @@ service:
         query-parameters:
           commit_to_project:
             type: optional<boolean>
+            default: true
             docs: Set to "true" to immediately commit tasks to the project.
           return_task_ids:
             type: optional<boolean>
+            default: false
             docs: Set to "true" to return task IDs in the response.
           preannotated_from_fields:
             type: optional<string>
@@ -727,6 +795,7 @@ service:
               `text` field and a prediction with the `label` field when
               `preannoted_from_fields=["prediction"]`.
         name: ProjectsImportTasksRequest
+        content-type: application/json
       response:
         docs: Tasks successfully imported
         type: ProjectsImportTasksResponse
@@ -736,7 +805,7 @@ service:
         - path-parameters:
             id: 1
           request:
-            - {}
+            - key: value
           response:
             body:
               task_count: 1
@@ -757,6 +826,8 @@ service:
       method: GET
       auth: true
       docs: Return data related to async project reimport operation
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -780,15 +851,12 @@ service:
               prediction_count: 1
               duration: 1
               file_upload_ids:
-                file_upload_ids:
-                  key: value
+                key: value
               files_as_tasks_list: true
               found_formats:
-                found_formats:
-                  key: value
+                key: value
               data_columns:
-                data_columns:
-                  key: value
+                key: value
               traceback: traceback
               project: 1
       audiences:
@@ -809,6 +877,8 @@ service:
         'Authorization: Token abc123'
 
         ```
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -845,6 +915,8 @@ service:
         The project ID can be found in the URL when viewing the project in Label
         Studio, or you can retrieve all project IDs using [List all
         projects](list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -852,6 +924,7 @@ service:
       display-name: Validate project labeling config
       request:
         body: root.ProjectLabelConfig
+        content-type: application/json
       response:
         docs: ''
         type: root.ProjectLabelConfig
@@ -865,3 +938,5 @@ service:
               label_config: label_config
       audiences:
         - public
+  source:
+    openapi: openapi/openapi.yaml

@@ -52,6 +52,8 @@ service:
         You must provide a project ID. The project ID can be found in the URL
         when viewing the project in Label Studio, or you can retrieve all
         project IDs using [List all projects](../list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -64,7 +66,7 @@ service:
             type: optional<string>
             docs: Selected export format (JSON by default)
           download_all_tasks:
-            type: optional<string>
+            type: optional<boolean>
             docs: >
 
               If true, download all tasks regardless of status. If false,
@@ -102,6 +104,8 @@ service:
         You must provide a project ID. The project ID can be found in the URL
         when viewing the project in Label Studio, or you can retrieve all
         project IDs using [List all projects](../list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -132,6 +136,8 @@ service:
 
         Included in the response is information about each snapshot, such as who
         created it and what format it is in. 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -158,8 +164,7 @@ service:
                 status: created
                 md5: md5
                 counters:
-                  counters:
-                    key: value
+                  key: value
                 converted_formats:
                   - export_type: export_type
       audiences:
@@ -186,6 +191,8 @@ service:
 
         For more information, see the [Label Studio documentation on exporting
         annotations](https://labelstud.io/guide/export.html).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -193,6 +200,7 @@ service:
       display-name: Create new export snapshot
       request:
         body: root.ExportCreate
+        content-type: application/json
       response:
         docs: ''
         type: root.ExportCreate
@@ -215,8 +223,7 @@ service:
               status: created
               md5: md5
               counters:
-                counters:
-                  key: value
+                key: value
               converted_formats:
                 - id: 1
                   status: created
@@ -260,6 +267,8 @@ service:
         You will also need the project ID. This can be found in the URL when
         viewing the project in Label Studio, or you can retrieve all project IDs
         using [List all projects](../list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -290,8 +299,7 @@ service:
               status: created
               md5: md5
               counters:
-                counters:
-                  key: value
+                key: value
               converted_formats:
                 - id: 1
                   status: created
@@ -311,6 +319,8 @@ service:
         You will need the export ID. You can find this in the response when you
         [create the snapshot via the API](create) or using [List all export
         snapshots](list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -348,6 +358,8 @@ service:
         The project ID can be found in the URL when viewing the project in Label
         Studio, or you can retrieve all project IDs using [List all
         projects](../list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -358,6 +370,7 @@ service:
       display-name: Export conversion
       request:
         body: root.ExportConvert
+        content-type: application/json
       response:
         docs: ''
         type: root.ExportConvert
@@ -392,6 +405,8 @@ service:
         The project ID can be found in the URL when viewing the project in Label
         Studio, or you can retrieve all project IDs using [List all
         projects](../list). 
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: integer
@@ -412,5 +427,7 @@ service:
             export_pk: export_pk
       audiences:
         - public
+  source:
+    openapi: openapi/openapi.yaml
 imports:
   root: ../__package__.yml

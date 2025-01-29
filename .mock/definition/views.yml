@@ -18,6 +18,8 @@ service:
         You will need to provide the project ID. You can find this in the URL
         when viewing the project in Label Studio, or you can use [List all
         projects](../projects/list). 
+      source:
+        openapi: openapi/openapi.yaml
       display-name: List views
       request:
         name: ViewsListRequest
@@ -40,14 +42,11 @@ service:
                       operator: operator
                   conjunction: conjunction
                 data:
-                  data:
-                    key: value
+                  key: value
                 ordering:
-                  ordering:
-                    key: value
+                  key: value
                 selected_items:
-                  selected_items:
-                    key: value
+                  key: value
                 user: 1
                 project: 1
       audiences:
@@ -66,6 +65,8 @@ service:
         You will need to provide the project ID. You can find this in the URL
         when viewing the project in Label Studio, or you can use [List all
         projects](../projects/list). 
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Create view
       request:
         name: ViewsCreateRequest
@@ -77,6 +78,7 @@ service:
             project:
               type: optional<integer>
               docs: Project ID
+        content-type: application/json
       response:
         docs: ''
         type: root.View
@@ -93,14 +95,11 @@ service:
                     operator: operator
                 conjunction: conjunction
               data:
-                data:
-                  key: value
+                key: value
               ordering:
-                ordering:
-                  key: value
+                key: value
               selected_items:
-                selected_items:
-                  key: value
+                key: value
               user: 1
               project: 1
       audiences:
@@ -118,12 +117,15 @@ service:
         You will need to provide the project ID. You can find this in the URL
         when viewing the project in Label Studio, or you can use [List all
         projects](../projects/list).
+      source:
+        openapi: openapi/openapi.yaml
       display-name: Delete all project views
       request:
         name: ViewReset
         body:
           properties:
             project: integer
+        content-type: application/json
       examples:
         - request:
             project: 1
@@ -137,6 +139,8 @@ service:
 
         Get the details about a specific Data Manager view (tab). You will need
         to supply the view ID. You can find this using [List views](list).  
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: string
@@ -159,14 +163,11 @@ service:
                     operator: operator
                 conjunction: conjunction
               data:
-                data:
-                  key: value
+                key: value
               ordering:
-                ordering:
-                  key: value
+                key: value
               selected_items:
-                selected_items:
-                  key: value
+                key: value
               user: 1
               project: 1
       audiences:
@@ -178,6 +179,8 @@ service:
       docs: >-
         Delete a specific Data Manager view (tab) by ID. You can find the view
         using [List views](list).
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: string
@@ -197,6 +200,8 @@ service:
         You can update a specific Data Manager view (tab) with additional
         filters and other customizations. You will need to supply the view ID.
         You can find this using [List views](list).  
+      source:
+        openapi: openapi/openapi.yaml
       path-parameters:
         id:
           type: string
@@ -212,6 +217,7 @@ service:
             project:
               type: optional<integer>
               docs: Project ID
+        content-type: application/json
       response:
         docs: ''
         type: root.View
@@ -230,18 +236,17 @@ service:
                     operator: operator
                 conjunction: conjunction
               data:
-                data:
-                  key: value
+                key: value
               ordering:
-                ordering:
-                  key: value
+                key: value
               selected_items:
-                selected_items:
-                  key: value
+                key: value
               user: 1
               project: 1
       audiences:
         - public
+  source:
+    openapi: openapi/openapi.yaml
 types:
   ViewsCreateRequestDataFiltersConjunction:
     enum:
@@ -252,6 +257,9 @@ types:
       "and") will be applied to all items in the filters list. It is not
       possible to combine "or" and "and" within one list of filters. All filters
       will be either combined with "or" or with "and", but not a mix of both.
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsCreateRequestDataFiltersItemsItemFilter:
     enum:
       - value: filter:tasks:agreement
@@ -345,6 +353,9 @@ types:
       Number of unresolved comments in a
       task</li><br><li>`filter:tasks:updated_at`<br> (Datetime) Time the task
       was updated at (e.g. new annotation was created, review added, etc)</li>
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsCreateRequestDataFiltersItemsItemOperator:
     enum:
       - contains
@@ -374,6 +385,9 @@ types:
       to</li><br><li>`not_exists`<br> Does not exist</li><br><li>`not_in`<br> Is
       not between min and max values, so the filter `value` should be e.g.
       `{"min": 1, "max": 7}`</li><br><li>`starts_with`<br> Starts with</li>
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsCreateRequestDataFiltersItemsItemValue:
     discriminated: false
     docs: Value to filter by
@@ -382,12 +396,15 @@ types:
         docs: String
       - type: integer
         docs: Integer
-      - type: double
+      - type: float
         docs: Float
       - type: boolean
         docs: Boolean
-      - docs: List of strings or integers
-        type: map<string, unknown>
+      - type: map<string, unknown>
+        docs: List of strings or integers
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsCreateRequestDataFiltersItemsItem:
     properties:
       filter:
@@ -469,6 +486,9 @@ types:
       value:
         type: ViewsCreateRequestDataFiltersItemsItemValue
         docs: Value to filter by
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsCreateRequestDataFilters:
     docs: >-
       Filters to apply on tasks. You can use [the helper class `Filters` from
@@ -488,6 +508,9 @@ types:
       items:
         docs: List of filter items
         type: list<ViewsCreateRequestDataFiltersItemsItem>
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsCreateRequestDataOrderingItem:
     enum:
       - value: tasks:agreement
@@ -534,6 +557,9 @@ types:
         name: TasksUnresolvedCommentCount
       - value: tasks:updated_at
         name: TasksUpdatedAt
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsCreateRequestData:
     docs: Custom view data
     properties:
@@ -551,6 +577,9 @@ types:
           List of fields to order by. Fields are similar to filters but without
           the `filter:` prefix. To reverse the order, add a minus sign before
           the field name, e.g. `-tasks:created_at`.
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsUpdateRequestDataFiltersConjunction:
     enum:
       - or
@@ -560,6 +589,9 @@ types:
       "and") will be applied to all items in the filters list. It is not
       possible to combine "or" and "and" within one list of filters. All filters
       will be either combined with "or" or with "and", but not a mix of both.
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsUpdateRequestDataFiltersItemsItemFilter:
     enum:
       - value: filter:tasks:agreement
@@ -653,6 +685,9 @@ types:
       Number of unresolved comments in a
       task</li><br><li>`filter:tasks:updated_at`<br> (Datetime) Time the task
       was updated at (e.g. new annotation was created, review added, etc)</li>
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsUpdateRequestDataFiltersItemsItemOperator:
     enum:
       - contains
@@ -682,6 +717,9 @@ types:
       to</li><br><li>`not_exists`<br> Does not exist</li><br><li>`not_in`<br> Is
       not between min and max values, so the filter `value` should be e.g.
       `{"min": 1, "max": 7}`</li><br><li>`starts_with`<br> Starts with</li>
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsUpdateRequestDataFiltersItemsItemValue:
     discriminated: false
     docs: Value to filter by
@@ -690,12 +728,15 @@ types:
         docs: String
       - type: integer
         docs: Integer
-      - type: double
+      - type: float
         docs: Float
       - type: boolean
         docs: Boolean
-      - docs: List of strings or integers
-        type: map<string, unknown>
+      - type: map<string, unknown>
+        docs: List of strings or integers
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsUpdateRequestDataFiltersItemsItem:
     properties:
       filter:
@@ -777,6 +818,9 @@ types:
       value:
         type: ViewsUpdateRequestDataFiltersItemsItemValue
         docs: Value to filter by
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsUpdateRequestDataFilters:
     docs: >-
       Filters to apply on tasks. You can use [the helper class `Filters` from
@@ -796,6 +840,9 @@ types:
       items:
         docs: List of filter items
         type: list<ViewsUpdateRequestDataFiltersItemsItem>
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
   ViewsUpdateRequestDataOrderingItem:
     enum:
       - value: tasks:agreement
@@ -842,6 +889,9 @@ types:
         name: TasksUnresolvedCommentCount
       - value: tasks:updated_at
         name: TasksUpdatedAt
+    inline: true
+    source:
+      openapi: openapi/openapi.yaml
   ViewsUpdateRequestData:
     docs: Custom view data
     properties:
@@ -859,3 +909,6 @@ types:
           List of fields to order by. Fields are similar to filters but without
           the `filter:` prefix. To reverse the order, add a minus sign before
           the field name, e.g. `-tasks:created_at`.
+    source:
+      openapi: openapi/openapi.yaml
+    inline: true
