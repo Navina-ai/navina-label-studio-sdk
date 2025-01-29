@@ -26,12 +26,12 @@ class ProjectsUpdateResponse(UniversalBaseModel):
     Label config in XML format
     """
 
-    assigned_annotators: typing.Optional[typing.List[int]] = pydantic_v1.Field(default=None)
+    assigned_annotators: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
     """
     List of annotator IDs assigned to the project
     """
 
-    expert_instruction: typing.Optional[str] = pydantic_v1.Field(default=None)
+    expert_instruction: typing.Optional[str] = pydantic.Field(default=None)
     """
     Labeling instructions to show to the user
     """
